@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventura na Floresta</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <main class="game-page">
+        <section class="game-card" aria-labelledby="game-title">
+            <header class="game-header">
+                <div>
+                    <p class="eyebrow">Jogo de plataforma</p>
+                    <h1 id="game-title">Aventura na Floresta</h1>
+                </div>
+
+                <div class="hud" aria-label="Informações do jogo">
+                    <span>Fase <strong id="level-value">1</strong></span>
+                    <span>Moedas <strong id="coins-value">0/0</strong></span>
+                    <span>Pontos <strong id="score-value">0</strong></span>
+                    <span>Vidas <strong id="lives-value">3</strong></span>
+                </div>
+            </header>
+
+            <div class="canvas-wrapper">
+                <canvas id="game-canvas" width="960" height="540" aria-label="Área do jogo Aventura na Floresta"></canvas>
+
+                <div id="game-overlay" class="overlay">
+                    <div class="overlay-panel">
+                        <p id="overlay-kicker" class="overlay-kicker">Bem-vindo!</p>
+                        <h2 id="overlay-title">Aventura na Floresta</h2>
+                        <p id="overlay-message"> Colete as moedas, evite os perigos e alcance a bandeira no fim da fase.</p>
+                        <button id="main-button" type="button">Começar aventura</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-bar">
+                <div class="instructions">
+                    <span><kbd>A</kbd> <kbd>D</kbd> ou <kbd>←</kbd> <kbd>→</kbd> para andar</span>
+                    <span><kbd>W</kbd> <kbd>↑</kbd> ou <kbd>Espaço</kbd> para pular</span>
+                    <span><kbd>P</kbd> para pausar</span>
+                </div>
+
+                <button id="restart-button" class="secondary-button" type="button">Reiniciar</button>
+            </div>
+
+            <div class="mobile-controls" aria-label="Controles na tela">
+                <button class="control-button" type="button" data-control="left" aria-label="Andar para a esquerda">←</button>
+                <button class="control-button" type="button" data-control="right" aria-label="Andar para a direita">→</button>
+                <button class="control-button jump-button" type="button" data-control="jump" aria-label="Pular">↑</button>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
