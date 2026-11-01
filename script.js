@@ -1,37 +1,51 @@
-const canvas = document.getElementById("game-canvas");
-const ctx = canvas.getContext("2d");
+// ===================== CONFIGURAÇÕES =====================
+// Todos os "números mágicos" ficam aqui, fácil de ajustar.
 
-// Elementos do placar
-const levelText = document.getElementById("level-value");
-const coinsText = document.getElementById("coins-value");
-const scoreText = document.getElementById("score-value");
-const livesText = document.getElementById("lives-value");
+const GRAVITY = 0.7;
+const JUMP_FORCE = 14;
+const PLAYER_SPEED = 5;
+const START_LIVES = 3;
+const START_POSITION = { x: 40, y: 420 };
 
-// Elementos da tela inicial
-const overlay = document.getElementById("game-overlay");
-const overlayKicker = document.getElementById("overlay-kicker");
-const overlayTitle = document.getElementById("overlay-title");
-const overlayMessage = document.getElementById("overlay-message");
-const mainButton = document.getElementById("main-button");
-const restartButton = document.getElementById("restart-button");
+const COIN_POINTS = 100;
+const GOAL_POINTS = 500;
 
-// Variáveis do jogo
-let running = false;
-let paused = false;
-let score = 0;
-let lives = 3;
-let collectedCoins = 0;
-let coins = [];
-
-const keys = {
-    left: false,
-    right: false
+const COLORS = {
+    sky: "#87ceeb",
+    sun: "#ffd54f",
+    dirt: "#795548",
+    grass: "#4caf50",
+    coin: "#ffca28",
+    spike: "#555555",
+    pole: "#eeeeee",
+    flag: "#e53935",
+    playerBody: "#1976d2",
+    playerFace: "#ffe0bd"
 };
 
-// Personagem
+// ===================== FASE =====================
+
+const platforms = [
+    { x: 0, y: 480, width: 960, height: 60 }, // chão
+    { x: 180, y: 390, width: 160, height: 20 },
+    { x: 430, y: 310, width: 160, height: 20 },
+    { x: 680, y: 390, width: 160, height: 20 }
+];
+
+const coinPositions = [
+    { x: 250, y: 350 },
+    { x: 500, y: 270 },
+    { x: 750, y: 350 }
+];
+
+const spike = { x: 370, y: 450, width: 60, height: 30 };
+const goal = { x: 900, y: 350, width: 30, height: 130 };
+
+// ===================== ESTADO DO JOGO =====================
+
 const player = {
-    x: 40,
-    y: 420,
+    x: 0,
+    y: 0,
     width: 40,
     height: 50,
     speedX: 0,
@@ -39,390 +53,309 @@ const player = {
     onGround: false
 };
 
-// Plataformas
-const platforms = [
-    { x: 0, y: 480, width: 960, height: 60 },
-    { x: 180, y: 390, width: 160, height: 20 },
-    { x: 430, y: 310, width: 160, height: 20 },
-    { x: 680, y: 390, width: 160, height: 20 }
-];
+const keys = { left: false, right: false };
 
-// Moedas
-const originalCoins = [
-    { x: 250, y: 350, width: 20, height: 20 },
-    { x: 500, y: 270, width: 20, height: 20 },
-    { x: 750, y: 350, width: 20, height: 20 }
-];
+let running = false;
+let paused = false;
+let score = 0;
+let lives = START_LIVES;
+let coins = [];
 
-// Espinho e bandeira
-const spike = {
-    x: 370,
-    y: 450,
-    width: 60,
-    height: 30
-};
+// ===================== ELEMENTOS DA PÁGINA =====================
 
-const goal = {
-    x: 900,
-    y: 350,
-    width: 30,
-    height: 130
-};
+const canvas = document.getElementById("game-canvas");
+const ctx = canvas.getContext("2d");
 
-// Inicia ou reinicia o jogo
+const coinsText = document.getElementById("coins-value");
+const scoreText = document.getElementById("score-value");
+const livesText = document.getElementById("lives-value");
+
+const overlay = document.getElementById("game-overlay");
+const overlayKicker = document.getElementById("overlay-kicker");
+const overlayTitle = document.getElementById("overlay-title");
+const overlayMessage = document.getElementById("overlay-message");
+const mainButton = document.getElementById("main-button");
+const restartButton = document.getElementById("restart-button");
+
+// ===================== CONTROLE DO JOGO =====================
+
 function startGame() {
     score = 0;
-    lives = 3;
-    collectedCoins = 0;
-
-    coins = originalCoins.map(coin => ({
-        ...coin,
-        collected: false
-    }));
-
+    lives = START_LIVES;
+    resetCoins();
     resetPlayer();
     updateScoreboard();
 
     running = true;
     paused = false;
-
-    overlay.classList.add("hidden");
+    hideMessage();
 }
 
-// Volta o jogador para o começo
+function resetCoins() {
+    coins = coinPositions.map(pos => ({
+        x: pos.x,
+        y: pos.y,
+        width: 20,
+        height: 20,
+        collected: false
+    }));
+}
+
 function resetPlayer() {
-    player.x = 40;
-    player.y = 420;
+    player.x = START_POSITION.x;
+    player.y = START_POSITION.y;
     player.speedX = 0;
     player.speedY = 0;
     player.onGround = false;
 }
 
-// Atualiza o placar
+function togglePause() {
+    paused = !paused;
+
+    if (paused) {
+        showMessage("Pausa", "Jogo pausado", "Aperte P ou clique para continuar.", "Continuar");
+    } else {
+        hideMessage();
+    }
+}
+
+function loseLife() {
+    lives--;
+    updateScoreboard();
+
+    if (lives <= 0) {
+        endGame("Fim de jogo", "Você perdeu!", "Tentar novamente");
+    } else {
+        resetPlayer();
+    }
+}
+
+function endGame(kicker, title, buttonText) {
+    running = false;
+    showMessage(kicker, title, `Pontuação: ${score}`, buttonText);
+}
+
+// ===================== TELA (HUD E MENSAGENS) =====================
+
 function updateScoreboard() {
-    levelText.textContent = "1";
-    coinsText.textContent = `${collectedCoins}/${coins.length}`;
+    const collected = coins.filter(coin => coin.collected).length;
+
+    coinsText.textContent = `${collected}/${coins.length}`;
     scoreText.textContent = score;
     livesText.textContent = lives;
 }
 
-// Verifica colisão entre dois objetos
-function collision(first, second) {
+function showMessage(kicker, title, message, buttonText) {
+    overlayKicker.textContent = kicker;
+    overlayTitle.textContent = title;
+    overlayMessage.textContent = message;
+    mainButton.textContent = buttonText;
+    overlay.classList.remove("hidden");
+}
+
+function hideMessage() {
+    overlay.classList.add("hidden");
+}
+
+// ===================== LÓGICA =====================
+
+// Verifica se dois retângulos estão se encostando
+function isColliding(a, b) {
     return (
-        first.x < second.x + second.width &&
-        first.x + first.width > second.x &&
-        first.y < second.y + second.height &&
-        first.y + first.height > second.y
+        a.x < b.x + b.width &&
+        a.x + a.width > b.x &&
+        a.y < b.y + b.height &&
+        a.y + a.height > b.y
     );
 }
 
-// Atualiza a posição do jogador
-function updatePlayer() {
-    // Movimento horizontal
+function jump() {
+    if (running && !paused && player.onGround) {
+        player.speedY = -JUMP_FORCE;
+        player.onGround = false;
+    }
+}
+
+function movePlayer() {
+    // Andar
     if (keys.left) {
-        player.speedX = -5;
+        player.speedX = -PLAYER_SPEED;
     } else if (keys.right) {
-        player.speedX = 5;
+        player.speedX = PLAYER_SPEED;
     } else {
         player.speedX = 0;
     }
 
     player.x += player.speedX;
 
-    // Limites da tela
-    if (player.x < 0) {
-        player.x = 0;
-    }
-
-    if (player.x + player.width > canvas.width) {
-        player.x = canvas.width - player.width;
-    }
+    // Não deixa sair pelas laterais
+    player.x = Math.max(0, Math.min(player.x, canvas.width - player.width));
 
     // Gravidade
     const oldBottom = player.y + player.height;
-
-    player.speedY += 0.7;
+    player.speedY += GRAVITY;
     player.y += player.speedY;
     player.onGround = false;
 
-    // Colisão com plataformas
+    // Pousar em plataformas (só quando está caindo por cima delas)
     for (const platform of platforms) {
-        const insidePlatform =
-            player.x < platform.x + platform.width &&
-            player.x + player.width > platform.x;
+        const isAbove = player.x < platform.x + platform.width && player.x + player.width > platform.x;
+        const isLanding = player.speedY >= 0 && oldBottom <= platform.y && player.y + player.height >= platform.y;
 
-        const fallingOnPlatform =
-            player.speedY >= 0 &&
-            oldBottom <= platform.y &&
-            player.y + player.height >= platform.y;
-
-        if (insidePlatform && fallingOnPlatform) {
+        if (isAbove && isLanding) {
             player.y = platform.y - player.height;
             player.speedY = 0;
             player.onGround = true;
         }
     }
 
-    // Caiu para fora da tela
+    // Caiu da tela
     if (player.y > canvas.height) {
         loseLife();
     }
 }
 
-// Verifica moedas, espinho e bandeira
-function checkObjects() {
-    // Coleta de moedas
+function checkCollisions() {
     for (const coin of coins) {
-        if (!coin.collected && collision(player, coin)) {
+        if (!coin.collected && isColliding(player, coin)) {
             coin.collected = true;
-            collectedCoins++;
-            score += 100;
-
+            score += COIN_POINTS;
             updateScoreboard();
         }
     }
 
-    // Colisão com o espinho
-    if (collision(player, spike)) {
+    if (isColliding(player, spike)) {
         loseLife();
     }
 
-    // Colisão com a bandeira
-    if (collision(player, goal)) {
-        score += 500;
-        running = false;
-
+    if (isColliding(player, goal)) {
+        score += GOAL_POINTS;
         updateScoreboard();
-
-        showMessage(
-            "Parabéns!",
-            "Você venceu!",
-            `Pontuação: ${score}`,
-            "Jogar novamente"
-        );
+        endGame("Parabéns!", "Você venceu!", "Jogar novamente");
     }
 }
 
-// Retira uma vida
-function loseLife() {
-    lives--;
+// ===================== DESENHO =====================
 
-    updateScoreboard();
-
-    if (lives <= 0) {
-        running = false;
-
-        showMessage(
-            "Fim de jogo",
-            "Você perdeu!",
-            `Pontuação: ${score}`,
-            "Tentar novamente"
-        );
-    } else {
-        resetPlayer();
-    }
-}
-
-// Mostra a tela de mensagem
-function showMessage(kicker, title, message, buttonText) {
-    overlayKicker.textContent = kicker;
-    overlayTitle.textContent = title;
-    overlayMessage.textContent = message;
-    mainButton.textContent = buttonText;
-
-    overlay.classList.remove("hidden");
-}
-
-// Desenha todos os elementos
-function drawGame() {
-    // Céu
-    ctx.fillStyle = "#87ceeb";
+function drawBackground() {
+    ctx.fillStyle = COLORS.sky;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Sol
-    ctx.fillStyle = "#ffd54f";
+    ctx.fillStyle = COLORS.sun;
     ctx.beginPath();
     ctx.arc(820, 80, 40, 0, Math.PI * 2);
     ctx.fill();
-
-    // Plataformas
-    for (const platform of platforms) {
-        ctx.fillStyle = "#795548";
-
-        ctx.fillRect(
-            platform.x,
-            platform.y,
-            platform.width,
-            platform.height
-        );
-
-        ctx.fillStyle = "#4caf50";
-
-        ctx.fillRect(
-            platform.x,
-            platform.y,
-            platform.width,
-            10
-        );
-    }
-
-    // Moedas
-    for (const coin of coins) {
-        if (!coin.collected) {
-            ctx.fillStyle = "#ffca28";
-            ctx.beginPath();
-
-            ctx.arc(
-                coin.x + 10,
-                coin.y + 10,
-                10,
-                0,
-                Math.PI * 2
-            );
-
-            ctx.fill();
-        }
-    }
-
-    // Espinhos
-    ctx.fillStyle = "#555555";
-
-    for (let i = 0; i < 3; i++) {
-        const x = spike.x + i * 20;
-
-        ctx.beginPath();
-        ctx.moveTo(x, spike.y + 30);
-        ctx.lineTo(x + 10, spike.y);
-        ctx.lineTo(x + 20, spike.y + 30);
-        ctx.fill();
-    }
-
-    // Poste da bandeira
-    ctx.fillStyle = "#eeeeee";
-
-    ctx.fillRect(
-        goal.x,
-        goal.y,
-        6,
-        goal.height
-    );
-
-    // Bandeira
-    ctx.fillStyle = "#e53935";
-
-    ctx.fillRect(
-        goal.x + 6,
-        goal.y,
-        40,
-        25
-    );
-
-    // Corpo do personagem
-    ctx.fillStyle = "#1976d2";
-
-    ctx.fillRect(
-        player.x,
-        player.y,
-        player.width,
-        player.height
-    );
-
-    // Rosto do personagem
-    ctx.fillStyle = "#ffe0bd";
-
-    ctx.fillRect(
-        player.x + 8,
-        player.y + 5,
-        24,
-        20
-    );
 }
 
-// Laço principal do jogo
+function drawPlatform(platform) {
+    ctx.fillStyle = COLORS.dirt;
+    ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+
+    ctx.fillStyle = COLORS.grass;
+    ctx.fillRect(platform.x, platform.y, platform.width, 10);
+}
+
+function drawCoin(coin) {
+    const radius = coin.width / 2;
+
+    ctx.fillStyle = COLORS.coin;
+    ctx.beginPath();
+    ctx.arc(coin.x + radius, coin.y + radius, radius, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+function drawSpike() {
+    const toothWidth = 20;
+    const teeth = spike.width / toothWidth;
+
+    ctx.fillStyle = COLORS.spike;
+
+    for (let i = 0; i < teeth; i++) {
+        const x = spike.x + i * toothWidth;
+
+        ctx.beginPath();
+        ctx.moveTo(x, spike.y + spike.height);
+        ctx.lineTo(x + toothWidth / 2, spike.y);
+        ctx.lineTo(x + toothWidth, spike.y + spike.height);
+        ctx.fill();
+    }
+}
+
+function drawGoal() {
+    ctx.fillStyle = COLORS.pole;
+    ctx.fillRect(goal.x, goal.y, 6, goal.height);
+
+    ctx.fillStyle = COLORS.flag;
+    ctx.fillRect(goal.x + 6, goal.y, 40, 25);
+}
+
+function drawPlayer() {
+    ctx.fillStyle = COLORS.playerBody;
+    ctx.fillRect(player.x, player.y, player.width, player.height);
+
+    ctx.fillStyle = COLORS.playerFace;
+    ctx.fillRect(player.x + 8, player.y + 5, 24, 20);
+}
+
+function drawGame() {
+    drawBackground();
+    platforms.forEach(drawPlatform);
+    coins.filter(coin => !coin.collected).forEach(drawCoin);
+    drawSpike();
+    drawGoal();
+    drawPlayer();
+}
+
+// ===================== LAÇO PRINCIPAL =====================
+
 function gameLoop() {
     if (running && !paused) {
-        updatePlayer();
-        checkObjects();
+        movePlayer();
+        checkCollisions();
     }
 
     drawGame();
-
     requestAnimationFrame(gameLoop);
 }
 
-// Teclas pressionadas
-window.addEventListener("keydown", function (event) {
-    if (event.code === "ArrowLeft" || event.code === "KeyA") {
-        keys.left = true;
-    }
+// ===================== TECLADO E BOTÕES =====================
 
-    if (event.code === "ArrowRight" || event.code === "KeyD") {
-        keys.right = true;
-    }
+const LEFT_KEYS = ["ArrowLeft", "KeyA"];
+const RIGHT_KEYS = ["ArrowRight", "KeyD"];
+const JUMP_KEYS = ["ArrowUp", "KeyW", "Space"];
 
-    const jumpKey =
-        event.code === "ArrowUp" ||
-        event.code === "KeyW" ||
-        event.code === "Space";
+window.addEventListener("keydown", event => {
+    const code = event.code;
 
-    if (
-        jumpKey &&
-        player.onGround &&
-        running &&
-        !paused
-    ) {
-        player.speedY = -14;
-        player.onGround = false;
+    if (LEFT_KEYS.includes(code)) keys.left = true;
+    if (RIGHT_KEYS.includes(code)) keys.right = true;
+    if (JUMP_KEYS.includes(code)) jump();
+    if (code === "KeyP" && running) togglePause();
 
+    // Evita que setas/espaço rolem a página ou "cliquem" no botão em foco
+    if ([...LEFT_KEYS, ...RIGHT_KEYS, ...JUMP_KEYS].includes(code)) {
         event.preventDefault();
     }
-
-    // Pausar com a tecla P
-    if (event.code === "KeyP" && running) {
-        paused = !paused;
-
-        if (paused) {
-            showMessage(
-                "Pausa",
-                "Jogo pausado",
-                "Clique para continuar.",
-                "Continuar"
-            );
-        } else {
-            overlay.classList.add("hidden");
-        }
-    }
 });
 
-// Teclas soltas
-window.addEventListener("keyup", function (event) {
-    if (event.code === "ArrowLeft" || event.code === "KeyA") {
-        keys.left = false;
-    }
-
-    if (event.code === "ArrowRight" || event.code === "KeyD") {
-        keys.right = false;
-    }
+window.addEventListener("keyup", event => {
+    if (LEFT_KEYS.includes(event.code)) keys.left = false;
+    if (RIGHT_KEYS.includes(event.code)) keys.right = false;
 });
 
-// Botão principal
-mainButton.addEventListener("click", function () {
+mainButton.addEventListener("click", () => {
     if (paused) {
-        paused = false;
-        overlay.classList.add("hidden");
+        togglePause();
     } else {
         startGame();
     }
 });
 
-// Botão de reiniciar
 restartButton.addEventListener("click", startGame);
 
-// Prepara a primeira tela
-coins = originalCoins.map(coin => ({
-    ...coin,
-    collected: false
-}));
+// ===================== INÍCIO =====================
 
+resetCoins();
+resetPlayer();
 updateScoreboard();
 gameLoop();
