@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +17,7 @@
                 </div>
 
                 <div class="hud" aria-label="Informações do jogo">
+                    <span>Fase <strong id="level-value">1/2</strong></span>
                     <span>Moedas <strong id="coins-value">0/0</strong></span>
                     <span>Pontos <strong id="score-value">0</strong></span>
                     <span>Vidas <strong id="lives-value">3</strong></span>
@@ -26,11 +27,12 @@
             <div class="canvas-wrapper">
                 <canvas id="game-canvas" width="960" height="540" aria-label="Área do jogo Aventura na Floresta"></canvas>
 
+                <!-- Tela de início, pausa, vitória e derrota (o texto muda pelo JavaScript) -->
                 <div id="game-overlay" class="overlay">
                     <div class="overlay-panel">
                         <p id="overlay-kicker" class="overlay-kicker">Bem-vindo!</p>
                         <h2 id="overlay-title">Aventura na Floresta</h2>
-                        <p id="overlay-message">Colete as moedas, evite os perigos e alcance a bandeira no fim da fase.</p>
+                        <p id="overlay-message">Pegue todas as moedas para liberar a bandeira. Pule em cima dos besouros, desvie dos espinhos e não caia nos buracos!</p>
                         <button id="main-button" type="button">Começar aventura</button>
                     </div>
                 </div>
@@ -38,12 +40,22 @@
 
             <div class="bottom-bar">
                 <div class="instructions">
-                    <span><kbd>A</kbd> <kbd>D</kbd> ou <kbd>←</kbd> <kbd>→</kbd> para andar</span>
-                    <span><kbd>W</kbd> <kbd>↑</kbd> ou <kbd>Espaço</kbd> para pular</span>
-                    <span><kbd>P</kbd> para pausar</span>
+                    <span><kbd>A</kbd> <kbd>D</kbd> ou <kbd>←</kbd> <kbd>→</kbd> andar</span>
+                    <span><kbd>W</kbd> <kbd>↑</kbd> ou <kbd>Espaço</kbd> pular</span>
+                    <span><kbd>P</kbd> pausar</span>
                 </div>
 
-                <button id="restart-button" class="secondary-button" type="button">Reiniciar</button>
+                <div class="actions">
+                    <button id="pause-button" class="secondary-button" type="button">Pausar</button>
+                    <button id="restart-button" class="secondary-button" type="button">Reiniciar</button>
+                </div>
+            </div>
+
+            <!-- Controles para jogar com o mouse (ou com o dedo, no celular) -->
+            <div class="mouse-controls" aria-label="Controles na tela">
+                <button id="left-button" class="control-button" type="button" aria-label="Andar para a esquerda">←</button>
+                <button id="jump-button" class="control-button" type="button" aria-label="Pular">↑</button>
+                <button id="right-button" class="control-button" type="button" aria-label="Andar para a direita">→</button>
             </div>
         </section>
     </main>

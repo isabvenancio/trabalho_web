@@ -1,9 +1,20 @@
-/* Estilo geral */
+/* ===================== CORES ===================== */
+/* Variáveis CSS: troca aqui e muda na página toda */
+:root {
+    --green: #2e7d32;
+    --green-dark: #1b5e20;
+    --gray: #555555;
+    --light: #f1f5f2;
+    --border: #cfd8d1;
+    --text: #222222;
+}
+
+/* ===================== ESTILO GERAL ===================== */
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #dff3e4;
-    color: #222222;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    background: linear-gradient(180deg, #cdeed6, #8fcf9f);
 }
 
 .game-page {
@@ -12,6 +23,7 @@ body {
     justify-content: center;
     align-items: center;
     padding: 20px;
+    box-sizing: border-box;
 }
 
 .game-card {
@@ -19,22 +31,29 @@ body {
     max-width: 100%;
     padding: 20px;
     background-color: white;
-    border: 2px solid #2e7d32;
-    border-radius: 10px;
+    border: 2px solid var(--green);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
 }
 
-/* Título e placar */
+/* ===================== TÍTULO E PLACAR ===================== */
 .game-header {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     margin-bottom: 15px;
 }
 
 .eyebrow {
     margin: 0;
-    color: #2e7d32;
+    color: var(--green);
     font-weight: bold;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 1px;
 }
 
 h1 {
@@ -43,22 +62,24 @@ h1 {
 
 .hud {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
 }
 
 .hud span {
-    padding: 8px;
-    background-color: #eeeeee;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
+    padding: 8px 12px;
+    background-color: var(--light);
+    border: 1px solid var(--border);
+    border-radius: 20px;
 }
 
-/* Área do jogo */
+/* ===================== ÁREA DO JOGO ===================== */
 .canvas-wrapper {
     position: relative;
     overflow: hidden;
     line-height: 0;
-    border: 2px solid #333333;
+    border: 3px solid #333333;
+    border-radius: 6px;
 }
 
 canvas {
@@ -67,17 +88,14 @@ canvas {
     height: auto;
 }
 
-/* Tela de início e de fim */
+/* Tela de início, pausa e fim (fica por cima do canvas) */
 .overlay {
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+    inset: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.65);
+    background-color: rgba(0, 0, 0, 0.6);
     line-height: normal;
 }
 
@@ -91,11 +109,12 @@ canvas {
     padding: 25px;
     text-align: center;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 .overlay-kicker {
-    color: #2e7d32;
+    margin-top: 0;
+    color: var(--green);
     font-weight: bold;
 }
 
@@ -107,43 +126,83 @@ canvas {
     line-height: 1.5;
 }
 
-/* Botões */
+/* ===================== BOTÕES ===================== */
 button {
-    padding: 10px 15px;
-    font-family: Arial, sans-serif;
+    padding: 10px 16px;
+    font-family: inherit;
+    font-size: 15px;
     font-weight: bold;
+    color: white;
     cursor: pointer;
     border: none;
-    border-radius: 5px;
+    border-radius: 6px;
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+button:active {
+    transform: scale(0.95);
 }
 
 #main-button {
-    color: white;
-    background-color: #2e7d32;
+    background-color: var(--green);
+}
+
+#main-button:hover {
+    background-color: var(--green-dark);
 }
 
 .secondary-button {
-    color: white;
-    background-color: #555555;
+    background-color: var(--gray);
 }
 
-/* Instruções */
+.secondary-button:hover {
+    background-color: #333333;
+}
+
+/* ===================== INSTRUÇÕES E CONTROLES ===================== */
 .bottom-bar {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
     margin-top: 15px;
 }
 
 .instructions {
     display: flex;
+    flex-wrap: wrap;
     gap: 15px;
     font-size: 13px;
 }
 
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
 kbd {
-    padding: 3px 5px;
-    background-color: #eeeeee;
+    padding: 3px 6px;
+    background-color: var(--light);
     border: 1px solid #999999;
-    border-radius: 3px;
+    border-radius: 4px;
+}
+
+.mouse-controls {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.control-button {
+    width: 60px;
+    height: 50px;
+    font-size: 22px;
+    background-color: var(--green);
+    user-select: none; /* não seleciona o texto ao segurar o botão */
+}
+
+.control-button:hover {
+    background-color: var(--green-dark);
 }
