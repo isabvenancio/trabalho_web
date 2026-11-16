@@ -1,0 +1,120 @@
+/* 1. Página e botões */
+body {
+    margin: 0;
+    background-color: #f8847c;
+    font-family: Arial, sans-serif;
+}
+
+#pagina {
+    width: 966px;
+    padding: 15px;
+    margin: 20px auto;
+    background-color: white;
+    border: 2px solid #d63d32;
+    border-radius: 10px;
+}
+
+h1 {
+    margin: 0 0 5px;
+    color: #d93530;
+}
+
+#placar { margin: 0 0 10px; font-size: 18px; }
+#instrucoes { text-align: center; color: #555; }
+#controles { margin-top: 10px; text-align: center; }
+
+button {
+    padding: 10px 16px;
+    color: white;
+    background-color: #d63d32;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover { background-color: #d63d32; }
+.botao-cinza { background-color: #555; }
+.botao-cinza:hover { background-color: #333; }
+
+/* 2. Área e cenário */
+#jogo {
+    position: relative;
+    width: 960px;
+    height: 540px;
+    overflow: hidden;
+    border: 3px solid #333;
+    background-color: #87ceeb;
+}
+
+#sol {
+    position: absolute;
+    left: 780px;
+    top: 40px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #ffd54f;
+}
+
+.nuvem {
+    position: absolute;
+    width: 130px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: white;
+}
+
+/* As posições dos elementos abaixo vêm do JavaScript. */
+.plataforma { position: absolute; background-color: #795548; }
+.grama { height: 10px; background-color: #4caf50; }
+.moeda { position: absolute; border-radius: 50%; background-color: #ffca28; }
+.espinho { position: absolute; white-space: nowrap; }
+.ponta { display: inline-block; width: 20px; color: #555; font-size: 34px; }
+
+/* 3. Personagens (desenhos guardados na pasta imagens) */
+#personagem, .inimigo { position: absolute; }
+#personagem { width: 40px; height: 50px; z-index: 2; }
+.inimigo { width: 36px; height: 30px; }
+#personagem img, .inimigo img { width: 100%; height: 100%; display: block; }
+
+/* 4. Bandeira */
+.bandeira { position: absolute; }
+.mastro {
+    position: absolute;
+    width: 6px;
+    height: 100%;
+    background-color: #eee;
+}
+
+#pano {
+    position: absolute;
+    left: 6px;
+    width: 40px;
+    height: 25px;
+    background-color: #9e9e9e;
+}
+
+/* 5. Mensagens de início, pausa e fim de jogo */
+#mensagem {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#caixa-mensagem {
+    width: 400px;
+    margin: 120px auto 0;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    background-color: white;
+}
+
+#mensagem-topo { color: #d63d32; font-weight: bold; }
+#mensagem-titulo { margin: 0; }

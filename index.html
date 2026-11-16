@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Super Mariano</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="prepararJogo()" onkeydown="teclaPressionada(event)" onkeyup="teclaSolta(event)">
+
+    <div id="pagina">
+        <h1>Super Mariano</h1>
+
+        <p id="placar">
+            Fase: <strong id="placar-fase">1/2</strong> |
+            Moedas: <strong id="placar-moedas">0/0</strong> |
+            Pontos: <strong id="placar-pontos">0</strong> |
+            Vidas: <strong id="placar-vidas">3</strong>
+        </p>
+
+        <div id="jogo">
+            <div id="sol"></div>
+            <div class="nuvem" style="left: 100px; top: 60px;"></div>
+            <div class="nuvem" style="left: 500px; top: 35px;"></div>
+
+            <!-- O JavaScript coloca aqui plataformas, moedas e inimigos. -->
+            <div id="cenario"></div>
+
+            <div id="personagem">
+                <img src="imagens/mariano.png" alt="Mariano">
+            </div>
+
+            <div id="mensagem">
+                <div id="caixa-mensagem">
+                    <p id="mensagem-topo">Bem-vindo!</p>
+                    <h2 id="mensagem-titulo">Super Mariano</h2>
+                    <p id="mensagem-texto">
+                        Pegue todas as moedas para liberar a bandeira.
+                        Pule sobre os Goombas e desvie dos espinhos e buracos!
+                    </p>
+                    <button type="button" id="botao-mensagem" onclick="botaoMensagem()">Começar aventura</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="controles">
+            <button type="button" onmousedown="esquerda = true" onmouseup="esquerda = false" onmouseout="esquerda = false">←</button>
+            <button type="button" onclick="pular()">↑</button>
+            <button type="button" onmousedown="direita = true" onmouseup="direita = false" onmouseout="direita = false">→</button>
+            <button type="button" class="botao-cinza" onclick="alternarPausa()">Pausar</button>
+            <button type="button" class="botao-cinza" onclick="iniciarJogo()">Reiniciar</button>
+        </div>
+
+        <p id="instrucoes">
+            A/D ou ←/→ para andar, W, ↑ ou Espaço para pular e P para pausar.
+        </p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
