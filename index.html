@@ -2,62 +2,93 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aventura na Floresta</title>
+    <title>Super Mariano</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js" defer></script>
 </head>
-<body>
-    <main class="game-page">
-        <section class="game-card" aria-labelledby="game-title">
-            <header class="game-header">
-                <div>
-                    <p class="eyebrow">Jogo de plataforma</p>
-                    <h1 id="game-title">Aventura na Floresta</h1>
-                </div>
 
-                <div class="hud" aria-label="Informações do jogo">
-                    <span>Fase <strong id="level-value">1/2</strong></span>
-                    <span>Moedas <strong id="coins-value">0/0</strong></span>
-                    <span>Pontos <strong id="score-value">0</strong></span>
-                    <span>Vidas <strong id="lives-value">3</strong></span>
-                </div>
-            </header>
+<!-- Eventos da página: onload prepara o jogo; onkeydown/onkeyup leem o teclado -->
+<body onload="prepararJogo()" onkeydown="teclaPressionada(event)" onkeyup="teclaSolta(event)">
 
-            <div class="canvas-wrapper">
-                <canvas id="game-canvas" width="960" height="540" aria-label="Área do jogo Aventura na Floresta"></canvas>
+    <div id="pagina">
 
-                <!-- Tela de início, pausa, vitória e derrota (o texto muda pelo JavaScript) -->
-                <div id="game-overlay" class="overlay">
-                    <div class="overlay-panel">
-                        <p id="overlay-kicker" class="overlay-kicker">Bem-vindo!</p>
-                        <h2 id="overlay-title">Aventura na Floresta</h2>
-                        <p id="overlay-message">Pegue todas as moedas para liberar a bandeira. Pule em cima dos besouros, desvie dos espinhos e não caia nos buracos!</p>
-                        <button id="main-button" type="button">Começar aventura</button>
+        <!-- Título e placar -->
+        <div id="cabecalho">
+            <h1>Super Mariano</h1>
+            <p id="placar">
+                Fase: <strong id="placar-fase">1/2</strong> &nbsp;|&nbsp;
+                Moedas: <strong id="placar-moedas">0/0</strong> &nbsp;|&nbsp;
+                Pontos: <strong id="placar-pontos">0</strong> &nbsp;|&nbsp;
+                Vidas: <strong id="placar-vidas">3</strong>
+            </p>
+        </div>
+
+        <!-- Área do jogo: tudo dentro dela é posicionado com position: absolute -->
+        <div id="jogo">
+            <div id="sol"></div>
+            <div class="nuvem" style="left: 100px; top: 60px;"></div>
+            <div class="nuvem" style="left: 500px; top: 35px;"></div>
+
+            <!-- As plataformas, moedas, espinhos, Goombas e a bandeira
+                 são escritos aqui pelo JavaScript (innerHTML) -->
+            <div id="cenario"></div>
+
+            <!-- Mariano desenhado inteiramente com HTML e CSS -->
+            <div id="personagem" role="img" aria-label="Mariano, personagem com boné vermelho e macacão azul">
+                <div class="mariano-escala">
+                    <div class="mariano-lado">
+                        <div class="mariano-arte">
+                            <div class="mariano-cabelo"></div>
+                            <div class="mariano-orelha"></div>
+                            <div class="mariano-rosto"></div>
+                            <div class="mariano-olho"></div>
+                            <div class="mariano-nariz"></div>
+                            <div class="mariano-bigode"></div>
+                            <div class="mariano-camisa"></div>
+                            <div class="mariano-braco braco-esquerdo"></div>
+                            <div class="mariano-braco braco-direito"></div>
+                            <div class="mariano-macacao"></div>
+                            <div class="mariano-alca alca-esquerda"></div>
+                            <div class="mariano-alca alca-direita"></div>
+                            <div class="mariano-botao botao-esquerdo"></div>
+                            <div class="mariano-botao botao-direito"></div>
+                            <div class="mariano-luva luva-esquerda"></div>
+                            <div class="mariano-luva luva-direita"></div>
+                            <div class="mariano-sapato sapato-esquerdo"></div>
+                            <div class="mariano-sapato sapato-direito"></div>
+                            <div class="mariano-bone"></div>
+                            <div class="mariano-aba"></div>
+                            <div class="mariano-emblema">M</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bottom-bar">
-                <div class="instructions">
-                    <span><kbd>A</kbd> <kbd>D</kbd> ou <kbd>←</kbd> <kbd>→</kbd> andar</span>
-                    <span><kbd>W</kbd> <kbd>↑</kbd> ou <kbd>Espaço</kbd> pular</span>
-                    <span><kbd>P</kbd> pausar</span>
-                </div>
-
-                <div class="actions">
-                    <button id="pause-button" class="secondary-button" type="button">Pausar</button>
-                    <button id="restart-button" class="secondary-button" type="button">Reiniciar</button>
+            <!-- Tela de mensagem: início, pausa, fase concluída, vitória e derrota -->
+            <div id="mensagem">
+                <div id="caixa-mensagem">
+                    <p id="mensagem-topo">Bem-vindo!</p>
+                    <h2 id="mensagem-titulo">Super Mariano</h2>
+                    <p id="mensagem-texto">Pegue todas as moedas para liberar a bandeira. Pule em cima dos Goombas, desvie dos espinhos e não caia nos buracos!</p>
+                    <button type="button" id="botao-mensagem" onclick="botaoMensagem()">Começar aventura</button>
                 </div>
             </div>
+        </div>
 
-            <!-- Controles para jogar com o mouse (ou com o dedo, no celular) -->
-            <div class="mouse-controls" aria-label="Controles na tela">
-                <button id="left-button" class="control-button" type="button" aria-label="Andar para a esquerda">←</button>
-                <button id="jump-button" class="control-button" type="button" aria-label="Pular">↑</button>
-                <button id="right-button" class="control-button" type="button" aria-label="Andar para a direita">→</button>
-            </div>
-        </section>
-    </main>
+        <!-- Botões para jogar com o mouse -->
+        <div id="controles">
+            <button type="button" onmousedown="esquerda = true" onmouseup="esquerda = false" onmouseout="esquerda = false">←</button>
+            <button type="button" onmousedown="pular()">↑</button>
+            <button type="button" onmousedown="direita = true" onmouseup="direita = false" onmouseout="direita = false">→</button>
+            <button type="button" class="botao-cinza" onclick="alternarPausa()">Pausar</button>
+            <button type="button" class="botao-cinza" onclick="iniciarJogo()">Reiniciar</button>
+        </div>
+
+        <p id="instrucoes">
+            Teclado: <strong>A</strong>/<strong>D</strong> ou <strong>←</strong>/<strong>→</strong> para andar,
+            <strong>W</strong>, <strong>↑</strong> ou <strong>Espaço</strong> para pular e <strong>P</strong> para pausar.
+        </p>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

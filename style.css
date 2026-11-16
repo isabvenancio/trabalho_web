@@ -1,208 +1,559 @@
-/* ===================== CORES ===================== */
-/* Variáveis CSS: troca aqui e muda na página toda */
-:root {
-    --green: #2e7d32;
-    --green-dark: #1b5e20;
-    --gray: #555555;
-    --light: #f1f5f2;
-    --border: #cfd8d1;
-    --text: #222222;
-}
+/* ===================== PÁGINA ===================== */
 
-/* ===================== ESTILO GERAL ===================== */
 body {
     margin: 0;
-    font-family: "Segoe UI", Arial, sans-serif;
-    color: var(--text);
-    background: linear-gradient(180deg, #cdeed6, #8fcf9f);
+    font-family: Arial, sans-serif;
+    background-color: #a5d6a7;
 }
 
-.game-page {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.game-card {
-    width: 1000px;
-    max-width: 100%;
-    padding: 20px;
+/* Cartão branco centralizado com margin: auto */
+#pagina {
+    width: 966px;
+    margin: 20px auto;
+    padding: 15px;
     background-color: white;
-    border: 2px solid var(--green);
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    box-sizing: border-box;
-}
-
-/* ===================== TÍTULO E PLACAR ===================== */
-.game-header {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.eyebrow {
-    margin: 0;
-    color: var(--green);
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 13px;
-    letter-spacing: 1px;
+    border: 2px solid #2e7d32;
+    border-radius: 10px;
 }
 
 h1 {
-    margin: 5px 0;
+    margin: 0 0 5px 0;
+    color: #d93530;
+    font-size: 32px;
+    letter-spacing: 0.5px;
+    text-shadow: 2px 2px 0 #ffe08a;
 }
 
-.hud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+#placar {
+    margin: 0 0 10px 0;
+    font-size: 18px;
 }
 
-.hud span {
-    padding: 8px 12px;
-    background-color: var(--light);
-    border: 1px solid var(--border);
-    border-radius: 20px;
+#instrucoes {
+    margin: 10px 0 0 0;
+    text-align: center;
+    color: #555555;
+}
+
+/* ===================== BOTÕES ===================== */
+
+button {
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #2e7d32;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1b5e20;
+}
+
+.botao-cinza {
+    background-color: #555555;
+}
+
+.botao-cinza:hover {
+    background-color: #333333;
+}
+
+#controles {
+    margin-top: 10px;
+    text-align: center;
 }
 
 /* ===================== ÁREA DO JOGO ===================== */
-.canvas-wrapper {
+
+/* position: relative faz os elementos de dentro (absolute)
+   usarem o canto da área do jogo como ponto (0, 0) */
+#jogo {
     position: relative;
-    overflow: hidden;
-    line-height: 0;
+    width: 960px;
+    height: 540px;
+    overflow: hidden; /* esconde o que sai da área (ex.: cair no buraco) */
+    background-color: #87ceeb;
     border: 3px solid #333333;
-    border-radius: 6px;
 }
 
-canvas {
-    display: block;
-    width: 100%;
-    height: auto;
-}
-
-/* Tela de início, pausa e fim (fica por cima do canvas) */
-.overlay {
+#sol {
     position: absolute;
-    inset: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    left: 780px;
+    top: 40px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #ffd54f;
+}
+
+.nuvem {
+    position: absolute;
+    width: 130px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: white;
+}
+
+/* ===================== ELEMENTOS DA FASE ===================== */
+/* left, top, width e height de cada um vêm do JavaScript */
+
+.plataforma {
+    position: absolute;
+    background-color: #795548;
+}
+
+.grama {
+    height: 10px;
+    background-color: #4caf50;
+}
+
+.moeda {
+    position: absolute;
+    border-radius: 50%;
+    background-color: #ffca28;
+}
+
+.espinho {
+    position: absolute;
+    white-space: nowrap; /* as pontas ficam todas na mesma linha */
+}
+
+/* Cada ponta ocupa 20px, uma ao lado da outra */
+.ponta {
+    display: inline-block;
+    width: 20px;
+    color: #555555;
+    font-size: 34px;
+    line-height: 30px;
+    text-align: center;
+}
+
+/* Goomba: o hitbox permanece com 36 x 30 px, como na versão original. */
+.inimigo {
+    position: absolute;
+    overflow: visible;
+    width: 36px;
+    height: 30px;
+    z-index: 1;
+}
+
+.goomba-escala {
+    position: relative;
+    width: 90px;
+    height: 75px;
+    transform: scale(0.4);
+    transform-origin: top left;
+}
+
+.goomba-lado,
+.goomba-arte {
+    position: relative;
+    width: 90px;
+    height: 75px;
+}
+
+.inimigo.goomba-virado-esquerda .goomba-lado {
+    transform: scaleX(-1);
+}
+
+.goomba-arte {
+    animation: goomba-caminhando 300ms ease-in-out infinite alternate;
+}
+
+.goomba-arte > div {
+    position: absolute;
+    box-sizing: border-box;
+}
+
+.goomba-corpo {
+    top: 1px;
+    left: 8px;
+    width: 74px;
+    height: 59px;
+    border-radius: 48% 48% 27% 27%;
+    background: #a66b39;
+    box-shadow: inset -7px -2px 0 #91572c;
+    z-index: 1;
+}
+
+.goomba-rosto {
+    top: 30px;
+    left: 16px;
+    width: 58px;
+    height: 33px;
+    border-radius: 45% 45% 30% 30%;
+    background: #ebc28f;
+    z-index: 2;
+}
+
+.goomba-olho {
+    top: 32px;
+    width: 10px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    z-index: 3;
+}
+
+.goomba-olho::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 5px;
+    width: 5px;
+    height: 12px;
+    border-radius: 6px;
+    background: #26211f;
+}
+
+.goomba-olho-esquerdo { left: 29px; }
+.goomba-olho-direito { left: 51px; }
+
+.goomba-sobrancelha {
+    top: 27px;
+    width: 24px;
+    height: 8px;
+    border-radius: 6px;
+    background: #3b261f;
+    z-index: 4;
+}
+
+.goomba-sobrancelha-esquerda { left: 18px; transform: rotate(27deg); }
+.goomba-sobrancelha-direita { left: 47px; transform: rotate(-27deg); }
+
+.goomba-presa {
+    top: 53px;
+    width: 12px;
+    height: 14px;
+    background: white;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    z-index: 5;
+}
+
+.goomba-presa-esquerda { left: 29px; }
+.goomba-presa-direita { left: 51px; }
+
+.goomba-pe {
+    bottom: 0;
+    width: 41px;
+    height: 16px;
+    border-radius: 50% 50% 5px 5px;
+    background: #56372b;
+    z-index: 6;
+}
+
+.goomba-pe-esquerdo { left: 0; }
+.goomba-pe-direito { right: 0; }
+
+.inimigo.goomba-derrotado .goomba-arte {
+    animation: none;
+    transform: scaleY(0.23);
+    transform-origin: bottom center;
+    transition: transform 140ms ease-in;
+}
+
+@keyframes goomba-caminhando {
+    from { transform: translateY(0) rotate(-2deg); }
+    to   { transform: translateY(-2px) rotate(2deg); }
+}
+
+.bandeira {
+    position: absolute;
+}
+
+.mastro {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 6px;
+    height: 100%;
+    background-color: #eeeeee;
+}
+
+/* O pano começa cinza (trancado); o JavaScript muda para vermelho */
+#pano {
+    position: absolute;
+    left: 6px;
+    top: 0px;
+    width: 40px;
+    height: 25px;
+    background-color: #9e9e9e;
+}
+
+/* ===================== PERSONAGEM ===================== */
+
+/* Mariano: arte 80 x 100 reduzida à hitbox original de 40 x 50 px.
+   Isso mantém as colisões, os pulos e as posições das duas fases. */
+#personagem {
+    position: absolute;
+    z-index: 2;
+    width: 40px;
+    height: 50px;
+}
+
+.mariano-escala {
+    position: relative;
+    width: 80px;
+    height: 100px;
+    transform: scale(0.5);
+    transform-origin: top left;
+}
+
+.mariano-lado,
+.mariano-arte {
+    position: relative;
+    width: 80px;
+    height: 100px;
+}
+
+#personagem.virado-esquerda .mariano-lado {
+    transform: scaleX(-1);
+}
+
+#personagem.mariano-correndo .mariano-arte {
+    animation: mariano-andando 170ms ease-in-out infinite alternate;
+}
+
+#personagem.mariano-pulando .mariano-arte {
+    transform: rotate(-5deg);
+}
+
+.mariano-arte > div {
+    position: absolute;
+    box-sizing: border-box;
+}
+
+.mariano-cabelo {
+    top: 26px;
+    left: 14px;
+    width: 18px;
+    height: 30px;
+    border-radius: 9px;
+    background: #513024;
+    z-index: 2;
+}
+
+.mariano-orelha {
+    top: 43px;
+    left: 13px;
+    width: 17px;
+    height: 16px;
+    border-radius: 50%;
+    background: #eeb184;
+    z-index: 4;
+}
+
+.mariano-rosto {
+    top: 27px;
+    left: 20px;
+    width: 47px;
+    height: 40px;
+    border-radius: 12px 11px 18px 15px;
+    background: #f2b986;
+    z-index: 3;
+}
+
+.mariano-olho {
+    top: 36px;
+    left: 53px;
+    width: 7px;
+    height: 13px;
+    border-radius: 5px;
+    background: #29221f;
+    z-index: 7;
+}
+
+.mariano-nariz {
+    top: 48px;
+    left: 55px;
+    width: 18px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e9a773;
+    z-index: 8;
+}
+
+.mariano-bigode {
+    top: 57px;
+    left: 35px;
+    width: 32px;
+    height: 10px;
+    border-radius: 12px 5px 12px 12px;
+    background: #492b22;
+    z-index: 9;
+}
+
+.mariano-bigode::before {
+    content: "";
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    width: 14px;
+    height: 10px;
+    border-radius: 50%;
+    background: #492b22;
+}
+
+.mariano-camisa {
+    top: 66px;
+    left: 13px;
+    width: 56px;
+    height: 29px;
+    border-radius: 13px 13px 6px 6px;
+    background: #dc3730;
+    z-index: 2;
+}
+
+.mariano-braco {
+    top: 68px;
+    width: 18px;
+    height: 28px;
+    border-radius: 12px;
+    background: #dc3730;
+    z-index: 3;
+}
+
+.braco-esquerdo { left: 7px; transform: rotate(16deg); }
+.braco-direito { right: 4px; transform: rotate(-16deg); }
+
+.mariano-macacao {
+    top: 80px;
+    left: 21px;
+    width: 45px;
+    height: 17px;
+    border-radius: 4px 4px 3px 3px;
+    background: #2d61b8;
+    z-index: 4;
+}
+
+.mariano-alca {
+    top: 70px;
+    width: 10px;
+    height: 18px;
+    background: #2d61b8;
+    z-index: 5;
+}
+
+.alca-esquerda { left: 26px; transform: rotate(-14deg); }
+.alca-direita { left: 52px; transform: rotate(14deg); }
+
+.mariano-botao {
+    top: 81px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #f8d85a;
+    z-index: 6;
+}
+
+.botao-esquerdo { left: 27px; }
+.botao-direito { left: 54px; }
+
+.mariano-luva {
+    top: 79px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    z-index: 6;
+}
+
+.luva-esquerda { left: 0; }
+.luva-direita { right: 0; }
+
+.mariano-sapato {
+    bottom: 0;
+    width: 32px;
+    height: 13px;
+    border-radius: 12px 10px 5px 5px;
+    background: #613d2c;
+    z-index: 5;
+}
+
+.sapato-esquerdo { left: 11px; }
+.sapato-direito { left: 46px; }
+
+.mariano-bone {
+    top: 4px;
+    left: 13px;
+    width: 61px;
+    height: 23px;
+    border-radius: 26px 26px 5px 5px;
+    background: #e33b34;
+    z-index: 10;
+}
+
+.mariano-bone::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 13px;
+    width: 17px;
+    height: 5px;
+    border-radius: 5px;
+    background: #f26e68;
+}
+
+.mariano-aba {
+    top: 23px;
+    left: 7px;
+    width: 72px;
+    height: 10px;
+    border-radius: 7px;
+    background: #b72725;
+    z-index: 11;
+}
+
+.mariano-emblema {
+    top: 9px;
+    left: 36px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    border-radius: 50%;
+    color: #d73230;
+    background: #fff;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 900;
+    font-family: Arial, sans-serif;
+    z-index: 12;
+}
+
+@keyframes mariano-andando {
+    from { transform: translateY(0) rotate(-2deg); }
+    to   { transform: translateY(-3px) rotate(2deg); }
+}
+
+/* ===================== TELA DE MENSAGEM ===================== */
+
+#mensagem {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 3; /* fica na frente de tudo */
     background-color: rgba(0, 0, 0, 0.6);
-    line-height: normal;
 }
 
-.overlay.hidden {
-    display: none;
-}
-
-.overlay-panel {
+#caixa-mensagem {
     width: 400px;
-    max-width: 80%;
-    padding: 25px;
+    margin: 120px auto 0 auto; /* centraliza na horizontal */
+    padding: 20px;
     text-align: center;
     background-color: white;
     border-radius: 10px;
 }
 
-.overlay-kicker {
+#mensagem-topo {
     margin-top: 0;
-    color: var(--green);
+    color: #2e7d32;
     font-weight: bold;
 }
 
-.overlay h2 {
+#mensagem-titulo {
     margin: 0;
-}
-
-.overlay p {
-    line-height: 1.5;
-}
-
-/* ===================== BOTÕES ===================== */
-button {
-    padding: 10px 16px;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: bold;
-    color: white;
-    cursor: pointer;
-    border: none;
-    border-radius: 6px;
-    transition: transform 0.1s, background-color 0.2s;
-}
-
-button:active {
-    transform: scale(0.95);
-}
-
-#main-button {
-    background-color: var(--green);
-}
-
-#main-button:hover {
-    background-color: var(--green-dark);
-}
-
-.secondary-button {
-    background-color: var(--gray);
-}
-
-.secondary-button:hover {
-    background-color: #333333;
-}
-
-/* ===================== INSTRUÇÕES E CONTROLES ===================== */
-.bottom-bar {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-.instructions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    font-size: 13px;
-}
-
-.actions {
-    display: flex;
-    gap: 8px;
-}
-
-kbd {
-    padding: 3px 6px;
-    background-color: var(--light);
-    border: 1px solid #999999;
-    border-radius: 4px;
-}
-
-.mouse-controls {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 15px;
-}
-
-.control-button {
-    width: 60px;
-    height: 50px;
-    font-size: 22px;
-    background-color: var(--green);
-    user-select: none; /* não seleciona o texto ao segurar o botão */
-}
-
-.control-button:hover {
-    background-color: var(--green-dark);
 }
