@@ -3,49 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <title>Super Mariano</title>
+    <!-- liga o arquivo CSS que define cores, tamanhos e posições dos elementos -->
     <link rel="stylesheet" href="style.css">
 </head>
+<!-- ao carregar, chama prepararJogo(), ao apertar uma tecla chama teclaPressionada(), ao soltar chama teclaSolta(), elas estão no script.js. -->
 <body onload="prepararJogo()" onkeydown="teclaPressionada(event)" onkeyup="teclaSolta(event)">
 
     <div id="pagina">
         <h1>Super Mariano</h1>
 
         <p id="placar">
+            <!-- Fase atual / total de fases; o JavaScript atualiza o texto pelo id "placar-fase". -->
             Fase: <strong id="placar-fase">1/2</strong> |
+            <!-- Moedas coletadas / total de moedas da fase. -->
             Moedas: <strong id="placar-moedas">0/0</strong> |
+            <!-- Pontuação acumulada do jogador. -->
             Pontos: <strong id="placar-pontos">0</strong> |
+            <!-- Quantidade de vidas restantes. -->
             Vidas: <strong id="placar-vidas">3</strong>
         </p>
 
         <div id="jogo">
+            <!-- Sol decorativo do fundo (desenhado pelo CSS) -->
             <div id="sol"></div>
+            <!-- Nuvem decorativa  -->
             <div class="nuvem" style="left: 100px; top: 60px;"></div>
+            <!-- Outra nuvem decorativa -->
             <div class="nuvem" style="left: 500px; top: 35px;"></div>
 
             <!-- O JavaScript coloca aqui plataformas, moedas e inimigos. -->
+            <!-- Contêiner vazio que recebe os elementos da fase criados pelo script. -->
             <div id="cenario"></div>
 
+            <!-- Caixa do personagem; o JavaScript move este elemento pela tela. -->
             <div id="personagem">
+                <!-- Imagem do Mariano -->
                 <img src="imagens/mariano.png" alt="Mariano">
             </div>
 
+            <!-- Camada de mensagem sobreposta ao jogo (início, game over, vitória etc.). -->
             <div id="mensagem">
+                <!-- Caixa central que agrupa o conteúdo da mensagem. -->
                 <div id="caixa-mensagem">
+                    <!-- Linha pequena acima do título; o script troca o texto conforme a situação. -->
                     <p id="mensagem-topo">Bem-vindo!</p>
                     <h2 id="mensagem-titulo">Super Mariano</h2>
                     <p id="mensagem-texto">
                         Pegue todas as moedas para liberar a bandeira.
                         Pule sobre os Goombas e desvie dos espinhos e buracos!
                     </p>
+                    <!-- Botão da mensagem; ao clicar chama botaoMensagem() (começa, continua ou reinicia o jogo). -->
                     <button type="button" id="botao-mensagem" onclick="botaoMensagem()">Começar aventura</button>
                 </div>
             </div>
         </div>
 
+        <!-- Botões de pausar e reiniciar (o boneco só se movimenta pelo teclado). -->
         <div id="controles">
-            <button type="button" onmousedown="esquerda = true" onmouseup="esquerda = false" onmouseout="esquerda = false">←</button>
-            <button type="button" onclick="pular()">↑</button>
-            <button type="button" onmousedown="direita = true" onmouseup="direita = false" onmouseout="direita = false">→</button>
             <button type="button" class="botao-cinza" onclick="alternarPausa()">Pausar</button>
             <button type="button" class="botao-cinza" onclick="iniciarJogo()">Reiniciar</button>
         </div>
@@ -53,8 +67,21 @@
         <p id="instrucoes">
             A/D ou ←/→ para andar, W, ↑ ou Espaço para pular e P para pausar.
         </p>
+
+        <!-- Efeitos sonoros (tocados pelo JavaScript com a função tocarSom) -->
+        <audio id="som-pulo" src="sons/pulo.wav"></audio>
+        <audio id="som-moeda" src="sons/moeda.wav"></audio>
+        <audio id="som-inimigo" src="sons/inimigo.wav"></audio>
+        <audio id="som-dano" src="sons/dano.wav"></audio>
+        <audio id="som-fase" src="sons/fase.wav"></audio>
+        <audio id="som-vitoria" src="sons/vitoria.wav"></audio>
+        <audio id="som-derrota" src="sons/derrota.wav"></audio>
+        <!-- Efeito sonoro em loop da música principal-->
+        <audio id="musica" src="sons/musica.wav" loop></audio> 
+
     </div>
 
+    <!-- Carrega o script.js com toda a lógica do jogo -->
     <script src="script.js"></script>
 </body>
 </html>
