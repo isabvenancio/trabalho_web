@@ -69,15 +69,15 @@
         </p>
 
         <!-- Efeitos sonoros (tocados pelo JavaScript com a função tocarSom) -->
-        <audio id="som-pulo" src="sons/pulo.wav"></audio>
-        <audio id="som-moeda" src="sons/moeda.wav"></audio>
-        <audio id="som-inimigo" src="sons/inimigo.wav"></audio>
-        <audio id="som-dano" src="sons/dano.wav"></audio>
-        <audio id="som-fase" src="sons/fase.wav"></audio>
-        <audio id="som-vitoria" src="sons/vitoria.wav"></audio>
-        <audio id="som-derrota" src="sons/derrota.wav"></audio>
+        <audio id="som-pulo" src="sons/pulo.mp3"></audio>
+        <audio id="som-moeda" src="sons/moeda.mp3"></audio>
+        <audio id="som-inimigo" src="sons/inimigo.mp3"></audio>
+        <audio id="som-dano" src="sons/dano.mp3"></audio>
+        <audio id="som-fase" src="sons/fase.m4a"></audio>
+        <audio id="som-vitoria" src="sons/vitoria.m4a"></audio>
+        <audio id="som-derrota" src="sons/derrota.mp3"></audio>
         <!-- Efeito sonoro em loop da música principal-->
-        <audio id="musica" src="sons/musica.wav" loop></audio> 
+        <audio id="musica" src="sons/musica.m4a" loop></audio> 
 
     </div>
 
