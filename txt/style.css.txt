@@ -1,0 +1,166 @@
+/* 1. Página e botões */
+
+/* Corpo da página: tira a margem padrão do navegador, define o fundo
+   salmão e a fonte usada em todo o site. */
+body {
+    margin: 0;
+    background-color: #f8847c;
+    font-family: Arial, sans-serif;
+}
+
+/* Cartão branco que envolve todo o conteúdo (título, placar, jogo e botões).
+   "margin: 20px auto" centraliza o cartão na horizontal. */
+#pagina {
+    width: 966px;
+    padding: 15px;
+    margin: 20px auto;
+    background-color: white;
+    border: 2px solid #d63d32;
+    border-radius: 10px;
+}
+
+/* Título principal do jogo, em vermelho e com pouco espaço embaixo. */
+h1 {
+    margin: 0 0 5px;
+    color: #d93530;
+}
+
+/* Linha do placar (pontos, vidas etc.), logo abaixo do título. */
+#placar { margin: 0 0 10px; font-size: 18px; }
+/* Texto com as instruções de como jogar, centralizado e em cinza. */
+#instrucoes { text-align: center; color: #555; }
+/* Área que agrupa os botões de controle, centralizada abaixo do jogo. */
+#controles { margin-top: 10px; text-align: center; }
+
+/* Estilo padrão de todos os botões: vermelhos, texto branco em negrito,
+   cantos arredondados, sem borda e com cursor de "mãozinha". */
+button {
+    padding: 10px 16px;
+    color: white;
+    background-color: #d63d32;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Cor do botão quando o mouse passa por cima.
+   Obs.: é a mesma cor do botão normal, então não há mudança visível. */
+button:hover { background-color: #d63d32; }
+/* Variação cinza de botão (usada para botões secundários). */
+.botao-cinza { background-color: #555; }
+/* Botão cinza fica mais escuro quando o mouse passa por cima. */
+.botao-cinza:hover { background-color: #333; }
+
+/* 2. Área e cenário */
+
+/* Tela do jogo: céu azul de 960x540. "position: relative" faz com que os
+   elementos absolutos de dentro (personagem, plataformas...) se posicionem
+   em relação a ela, e "overflow: hidden" esconde o que sair da tela. */
+#jogo {
+    position: relative;
+    width: 960px;
+    height: 540px;
+    overflow: hidden;
+    border: 3px solid #333;
+    background-color: #87ceeb;
+}
+
+/* Sol: um quadrado amarelo com border-radius de 50%, que vira um círculo,
+   fixo no canto superior direito do cenário. */
+#sol {
+    position: absolute;
+    left: 780px;
+    top: 40px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #ffd54f;
+}
+
+/* Nuvens: retângulos brancos arredondados. A posição de cada uma é definida
+   diretamente no HTML/JS. */
+.nuvem {
+    position: absolute;
+    width: 130px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: white;
+}
+
+/* As posições dos elementos abaixo vêm do JavaScript. */
+
+/* Plataformas: blocos marrons (terra) onde o personagem pisa. */
+.plataforma { position: absolute; background-color: #795548; }
+/* Faixa verde de grama no topo de cada plataforma. */
+.grama { height: 10px; background-color: #4caf50; }
+/* Moedas: círculos amarelos que o jogador coleta. */
+.moeda { position: absolute; border-radius: 50%; background-color: #ffca28; }
+/* Grupo de espinhos: "nowrap" mantém todas as pontas na mesma linha. */
+.espinho { position: absolute; white-space: nowrap; }
+/* Cada ponta do espinho (um caractere grande e cinza, lado a lado). */
+.ponta { display: inline-block; width: 20px; color: #555; font-size: 34px; }
+
+/* 3. Personagens (desenhos guardados na pasta imagens) */
+
+/* Personagem e inimigos são posicionados livremente pelo JavaScript. */
+#personagem, .inimigo { position: absolute; }
+/* Tamanho do personagem. z-index 2 o deixa na frente do cenário. */
+#personagem { width: 40px; height: 50px; z-index: 2; }
+/* Tamanho dos inimigos. */
+.inimigo { width: 36px; height: 30px; }
+/* A imagem de dentro ocupa todo o espaço da caixa do personagem/inimigo.
+   "display: block" remove o espaço extra que imagens inline deixam embaixo. */
+#personagem img, .inimigo img { width: 100%; height: 100%; display: block; }
+
+/* 4. Bandeira */
+
+/* Container da bandeira de chegada (posição e altura vêm do JS). */
+.bandeira { position: absolute; }
+/* Mastro: barra fina e clara com a altura total da bandeira. */
+.mastro {
+    position: absolute;
+    width: 6px;
+    height: 100%;
+    background-color: #eee;
+}
+
+/* Pano da bandeira, preso à direita do mastro (left: 6px). Começa cinza;
+   a cor pode ser trocada pelo JS quando o jogador chega ao fim da fase. */
+#pano {
+    position: absolute;
+    left: 6px;
+    width: 40px;
+    height: 25px;
+    background-color: #9e9e9e;
+}
+
+/* 5. Mensagens de início, pausa e fim de jogo */
+
+/* Camada escura semitransparente que cobre toda a tela do jogo.
+   z-index 3 a coloca acima de tudo, inclusive do personagem. */
+#mensagem {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* Caixa branca centralizada com o texto da mensagem. */
+#caixa-mensagem {
+    width: 400px;
+    margin: 120px auto 0;
+    padding: 20px;
+    text-align: center;
+    border-radius: 10px;
+    background-color: white;
+}
+
+/* Texto pequeno de destaque acima do título da mensagem (vermelho e negrito). */
+#mensagem-topo { color: #d63d32; font-weight: bold; }
+/* Título da mensagem (ex.: "Fim de jogo"), sem margem extra. */
+#mensagem-titulo { margin: 0; }
